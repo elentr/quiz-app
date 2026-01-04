@@ -1,0 +1,22 @@
+.container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.score {
+  font-size: 1.4rem;
+  margin: 20px 0;
+}
+
+.percentage {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #747bff;
+  margin: 20px 0;
+}
+
+.message {
+  font-size: 1.2rem;
+  margin-top: 30px;
+  color: #333;
+}

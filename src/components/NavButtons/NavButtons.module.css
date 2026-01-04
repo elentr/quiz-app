@@ -1,0 +1,37 @@
+.btns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #747bff;
+  color: #f9f9f9;
+  max-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover,
+  &:focus {
+    background-color: #535bf2;
+    box-shadow: 0 0 4px 8px rgba(116, 123, 255, 0.1);
+  }
+
+  &:disabled {
+    background-color: #a0c4ff;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.arrowPrev {
+  padding-left: 8px;
+  transform: rotate(180deg);
+}
+
+.arrowNext {
+  padding-left: 8px;
+}

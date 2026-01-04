@@ -1,0 +1,16 @@
+.question {
+  position: relative;
+  display: inline-block;
+  padding: 8px 0;
+  margin-bottom: 20px;
+}
+
+.question::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 60%;
+  height: 2px;
+  background-color: rgba(0, 0, 255, 0.3);
+}
