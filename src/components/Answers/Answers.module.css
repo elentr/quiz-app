@@ -15,7 +15,7 @@
 
 .textarea {
   display: flex;
-  width: 100%;
+  width: 90%;
   min-height: 120px;
   padding: 12px;
   margin-bottom: 20px;
@@ -32,4 +32,16 @@
   outline: none;
   border-color: #747bff;
   box-shadow: 0 0 0 4px rgba(116, 123, 255, 0.2);
+}
+
+@media only screen and (min-width: 768px) {
+  .textarea {
+    width: 95%;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .textarea {
+    width: 100%;
+  }
 }
