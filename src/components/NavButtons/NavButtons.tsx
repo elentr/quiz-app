@@ -17,7 +17,7 @@ export default function NavButtons({
     <div className={css.btns}>
       {onPrev && (
         <button type="button" onClick={onPrev} className={css.btn}>
-          ← Previous
+          <span>← </span>Previous
         </button>
       )}
       <button
@@ -26,7 +26,13 @@ export default function NavButtons({
         disabled={disabled}
         className={css.btn}
       >
-        {isLastStep ? "Submit" : "Next →"}
+        {isLastStep ? (
+          "Submit"
+        ) : (
+          <>
+            Next <span>→</span>
+          </>
+        )}
       </button>
     </div>
   );

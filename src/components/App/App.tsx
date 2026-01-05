@@ -116,7 +116,7 @@ export default function App() {
 
                 // скільки мають бал <= поточного
                 const { nbHits: worseOrEqual } = await index.search("", {
-                  numericFilters: [`score <= ${correctCount}`],
+                  numericFilters: [`score < ${correctCount}`],
                   hitsPerPage: 0,
                 });
 
@@ -130,15 +130,33 @@ export default function App() {
                 }
 
                 // повідомлення
+                if (totalParticipants > 0) {
+                  betterThanPercentage = Math.round(
+                    (worseOrEqual / totalParticipants) * 100
+                  );
+                }
+
+                // якщо макс бал — 100%
+                if (
+                  correctCount === totalScorableQuestions &&
+                  totalParticipants > 1
+                ) {
+                  betterThanPercentage = 100;
+                }
+
                 let message = "";
-                if (betterThanPercentage >= 90) {
-                  message = `Вітаю, ${userName}! Ти в топ-10% — краще за ${betterThanPercentage}% учасників! 🌟`;
+                const userName = (answers["q0"] as string)?.trim() || "Друже";
+
+                if (betterThanPercentage === 100) {
+                  message = `Вітаю, ${userName}! Ти лідер — кращий(-а) за всіх учасників! 🌟`;
+                } else if (betterThanPercentage >= 90) {
+                  message = `Неймовірно, ${userName}! Ти кращий(-а) за ${betterThanPercentage}% учасників! 🔥`;
                 } else if (betterThanPercentage >= 70) {
-                  message = `Супер, ${userName}! Ти впорався (-лася) краще, ніж ${betterThanPercentage}% людей! 🚀`;
+                  message = `Супер, ${userName}! Ти впорався(-лась) краще, ніж ${betterThanPercentage}% людей! 🚀`;
                 } else if (betterThanPercentage > 0) {
-                  message = `Добре, ${userName}! Ти краще за ${betterThanPercentage}% учасників. Продовжуй! 💪`;
+                  message = `Добре, ${userName}! Ти кращий(-а) за ${betterThanPercentage}% учасників. Продовжуй! 💪`;
                 } else {
-                  message = `Ти один (-а) з лідерів, ${userName}! Наступного разу — топ! ✨`;
+                  message = `Ти в грі, ${userName}! Кожна нова спроба — крок до топу ✨`;
                 }
 
                 alert(message);
