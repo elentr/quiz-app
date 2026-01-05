@@ -73,6 +73,84 @@ export default function App() {
 
       setScore(correctCount);
       setShowResults(true);
+
+      // === Збереження в Algolia ===
+      if (
+        import.meta.env.VITE_ALGOLIA_APP_ID &&
+        import.meta.env.VITE_ALGOLIA_API_KEY_W
+      ) {
+        import("algoliasearch").then((algoliasearch) => {
+          const client = algoliasearch.default(
+            import.meta.env.VITE_ALGOLIA_APP_ID!,
+            import.meta.env.VITE_ALGOLIA_API_KEY_W!
+          );
+
+          const index = client.initIndex(
+            import.meta.env.VITE_ALGOLIA_INDEX_NAME || "quiz_results"
+          );
+
+          const userName = (answers["q0"] as string)?.trim() || "Друже";
+
+          // результат save
+          index
+            .saveObject({
+              objectID: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+              name: userName,
+              score: correctCount,
+              total: totalScorableQuestions,
+              percentage:
+                totalScorableQuestions > 0
+                  ? Math.round((correctCount / totalScorableQuestions) * 100)
+                  : 0,
+              answers,
+              timestamp: new Date().toISOString(),
+            })
+            .then(async () => {
+              console.log("Результат збережено!");
+
+              try {
+                // всього учасників
+                const { nbHits: totalParticipants } = await index.search("", {
+                  hitsPerPage: 0,
+                });
+
+                // скільки мають бал <= поточного
+                const { nbHits: worseOrEqual } = await index.search("", {
+                  numericFilters: [`score <= ${correctCount}`],
+                  hitsPerPage: 0,
+                });
+
+                // відсоток людей
+                let betterThanPercentage = 0;
+                if (totalParticipants > 1) {
+                  betterThanPercentage = Math.round(
+                    ((totalParticipants - worseOrEqual) / totalParticipants) *
+                      100
+                  );
+                }
+
+                // повідомлення
+                let message = "";
+                if (betterThanPercentage >= 90) {
+                  message = `Вітаю, ${userName}! Ти в топ-10% — краще за ${betterThanPercentage}% учасників! 🌟`;
+                } else if (betterThanPercentage >= 70) {
+                  message = `Супер, ${userName}! Ти впорався (-лася) краще, ніж ${betterThanPercentage}% людей! 🚀`;
+                } else if (betterThanPercentage > 0) {
+                  message = `Добре, ${userName}! Ти краще за ${betterThanPercentage}% учасників. Продовжуй! 💪`;
+                } else {
+                  message = `Ти один (-а) з лідерів, ${userName}! Наступного разу — топ! ✨`;
+                }
+
+                alert(message);
+              } catch (err) {
+                console.error("Помилка підрахунку статистики:", err);
+              }
+            })
+            .catch((err) => {
+              console.error("Помилка збереження:", err);
+            });
+        });
+      }
     } else {
       setCurrentStepIndex(currentStepIndex + 1);
     }
